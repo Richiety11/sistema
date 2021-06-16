@@ -5,7 +5,7 @@
             <th scope="col">Nombre</th>
             <th scope="col">Email</th>
             <th scope="col">
-                <button type="button" class="btn btn-danger"
+                <button type="button" class="btn btn-outline-light"
                         (click)="modal.open(mimodal)">Agregar</button>
             </th>
         </thead>
@@ -25,27 +25,64 @@
 <!--Codigo del modal NgbModal-->
 <ng-template #mimodal let-modal>
     <div class="modal-header">
-      <h4 class="modal-title" id="modal-basic-title">Profile update</h4>
+      <h4 class="modal-title" id="modal-basic-title">Datos del usuario</h4>
       <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
     <div class="modal-body">
-      <form>
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
         <div class="form-group">
-          <label for="dateOfBirth">Date of birth</label>
+          <label>Nombre</label>
           <div class="input-group">
-            <input id="dateOfBirth" class="form-control" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker #dp="ngbDatepicker">
-            <div class="input-group-append">
-              <button class="btn btn-outline-secondary calendar" (click)="dp.toggle()" type="button"></button>
-            </div>
+            <input class="form-control" placeholder="Ingrese el nombre"
+                   formControlName="name"
+                   [ngClass]="{ 'is-invalid': submitted && fields.name.errors }"
+            >
+              <div *ngIf="submitted && fields.name.errors" class="invalid-feedback">
+                <div *ngIf="fields.name.errors.required">Nombre es requerido</div>
+              </div>
           </div>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <div class="input-group">
+            <input class="form-control" placeholder="Ingrese el email"
+                   formControlName="email"
+            >
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Contraseña</label>
+          <div class="input-group">
+            <input type="password" class="form-control" placeholder="Ingrese la contraseña"
+                   formControlName="password"
+            >
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Confirmar Contraseña</label>
+          <div class="input-group">
+            <input type="password" class="form-control" placeholder="Confirme la contraseña"
+                   formControlName="passwordconfirm"
+            >
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Tipo de usuario</label>
+          <div class="select-group">
+            <select class="form-control">
+              <option value="0">Regular</option>
+              <option value="1">Administrador</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-outline-dark">Guardar</button>
         </div>
       </form>
     </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Save</button>
-    </div>
+    
   </ng-template>
 
 </div> <!--Div que cierra el *ngIf="users.-->

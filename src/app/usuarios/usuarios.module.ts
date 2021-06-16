@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from "@angular/common/http";
-import { FormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
 import { UsuariosRoutingModule } from './usuarios-routing.module';
 import { UsuariosComponent } from './components/usuarios/usuarios.component';
@@ -18,6 +18,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     UsuariodetalleComponent
   ],
   imports: [
+    ReactiveFormsModule,
     NgbModule,
     HttpClientModule,
     FormsModule,
