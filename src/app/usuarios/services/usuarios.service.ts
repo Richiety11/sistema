@@ -8,7 +8,6 @@ import { UsuariosI } from '../models/usuarios';
 import { TokenI } from "../models/token";
 import { LoginComponent } from '../components/login/login.component';
 
-
 @Injectable({
   providedIn: 'root'
 })
@@ -25,7 +24,6 @@ export class UsuariosService {
   //Y la actualiza en memoria
   public changeLoginStatus$ = this. changeLoginStatusSubject.asObservable();
 
-  
   //Variable globar que almacena el nombre del usuario
   public changeUserNameSubject = new Subject<String>();
   public changeUserName$ = this.changeUserNameSubject.asObservable();
@@ -108,5 +106,29 @@ export class UsuariosService {
         })
       }
     )
-  }
+  }//fin de getUser
+
+  //Agregar un usuario
+  addUser(usuario:UsuariosI){
+    return this.httpClient.post(
+        this.AUTH_SERVER+'users/',usuario,
+        {
+          headers: new HttpHeaders({
+            'Authorization': 'token-auth ' + this.getToken()
+          })
+        }
+    );
+  }//Fin de addUser
+
+  //Remover usuarios
+  removeUser(id:string){
+    return this.httpClient.delete(
+      this.AUTH_SERVER+'users/'+ id,
+      {
+        headers: new HttpHeaders({
+          'Authorization': 'token-auth ' + this.getToken()
+        })
+      }
+    );
+  }//Fin de removeUser
 }//Class usuarioservices

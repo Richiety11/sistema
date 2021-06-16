@@ -57,11 +57,28 @@ export class UsuariosComponent implements OnInit {
 
   onSubmit(){
     this.submitted = true;
-
     //Detener la ejecucion si la forma no es valida
     if(this.registerForm?.invalid){
       return;
     }
+    //console.log(this.registerForm.value);
+    let usuario = {
+      _id:0,
+      name: this.registerForm.value.name,
+      email: this.registerForm.value.email,
+      password: this.registerForm.value.password,
+      tipo: this.registerForm.value.tipo
+    }
+
+    this.usuariosService.addUser(usuario)
+                        .subscribe(res =>{
+                          console.log(res);
+                          this.getUsers();//Obtenemos los usuarios
+                          this.registerForm.reset; //Limpiamos el formulario
+                          this.modal.dismissAll(); //Cerramos el modal
+                        },
+                        err => console.log("HTTP Response", err)
+                        )
   }//fin de onSubmit
 
   getUsers(){
@@ -76,6 +93,7 @@ export class UsuariosComponent implements OnInit {
   }//Fin de showUser
 
   open(content:any) {
+    this.registerForm.reset();
     this.modal.open(content, {ariaLabelledBy: 'modal-basic-title'}).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {

@@ -49,7 +49,12 @@
           <div class="input-group">
             <input class="form-control" placeholder="Ingrese el email"
                    formControlName="email"
+                   [ngClass]="{ 'is-invalid': submitted && fields.email.errors }"
             >
+              <div *ngIf="submitted && fields.email.errors" class="invalid-feedback">
+                <div *ngIf="fields.email.errors.required">Email es requerido</div>
+                <div *ngIf="fields.email.errors.email">Email debe ser una direccion de correo valida</div>
+              </div>
           </div>
         </div>
         <div class="form-group">
@@ -57,7 +62,12 @@
           <div class="input-group">
             <input type="password" class="form-control" placeholder="Ingrese la contraseña"
                    formControlName="password"
+                   [ngClass]="{ 'is-invalid': submitted && fields.password.errors }"
             >
+              <div *ngIf="submitted && fields.password.errors" class="invalid-feedback">
+                <div *ngIf="fields.password.errors.required">Password es requerido</div>
+                <div *ngIf="fields.password.errors.minlength">Password debe contener al menos 6 caracteres</div>
+              </div>
           </div>
         </div>
         <div class="form-group">
@@ -65,16 +75,24 @@
           <div class="input-group">
             <input type="password" class="form-control" placeholder="Confirme la contraseña"
                    formControlName="passwordconfirm"
+                   [ngClass]="{ 'is-invalid': submitted && fields.passwordconfirm.errors }"
             >
+              <div *ngIf="submitted && fields.passwordconfirm.errors" class="invalid-feedback">
+                <div *ngIf="fields.passwordconfirm.errors.required">Confirmacion del Password es requerido</div>
+                <div *ngIf="fields.passwordconfirm.errors.mustMatch">Passwords debe coincidir</div>
+              </div>
           </div>
         </div>
         <div class="form-group">
           <label>Tipo de usuario</label>
           <div class="select-group">
-            <select class="form-control">
-              <option value="0">Regular</option>
-              <option value="1">Administrador</option>
+            <select class="form-control" formControlName="tipo">
+              <option value="1" selected>Regular</option>
+              <option value="0">Administrador</option>
             </select>
+            <div *ngIf="submitted && fields.tipo.errors" class="invalid-feedback">
+              <div *ngIf="fields.tipo.errors.required">Tipo de usuario es requerido</div>
+            </div>
           </div>
         </div>
         <div class="modal-footer">
