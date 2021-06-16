@@ -1,0 +1,18 @@
+<div class="containert h-100" *ngIf="usuario">
+    <div class="row justify-content-center h-100">
+        <div class="col-sm-8 align-self-cent text-center">
+            <div class="card shadow">
+                <h1>Datos del usuario</h1>
+                <div class="card-body">
+                    <h5 class="card-title">Nombre: {{usuario.name}}</h5>
+                    <p class="card-text">Email: {{usuario.email}}</p>
+                    <p class="card-text">Password: {{usuario.password}}</p>
+                    <p class="card-text">Tipo: {{usuario.tipo}}</p>
+                    <a class="nav-link btn btn-outline-success"
+                    routerLink="/usuarios">Cerrar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<router-outlet></router-outlet>

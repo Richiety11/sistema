@@ -1,0 +1,57 @@
+<div *ngIf="users.length > 0; else noUsers">
+    <div class="container">
+    <table class="table table-striped table hover mt-2">
+        <thead class="thead-dark">
+            <th scope="col">Nombre</th>
+            <th scope="col">Email</th>
+            <th scope="col">
+                <button type="button" class="btn btn-danger"
+                        (click)="modal.open(mimodal)">Agregar</button>
+            </th>
+        </thead>
+        <tr scope="row" *ngFor="let user of users">
+            <td>{{user.name}}</td>
+            <td>{{user.email}}</td>
+            <td>
+                <button class="btn btn-outline-success"
+                        (click)="showUser(user._id)">
+                        Detalles
+                </button>
+            </td>
+        </tr>
+    </table>
+    </div>
+
+<!--Codigo del modal NgbModal-->
+<ng-template #mimodal let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Profile update</h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form>
+        <div class="form-group">
+          <label for="dateOfBirth">Date of birth</label>
+          <div class="input-group">
+            <input id="dateOfBirth" class="form-control" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker #dp="ngbDatepicker">
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary calendar" (click)="dp.toggle()" type="button"></button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Save</button>
+    </div>
+  </ng-template>
+
+</div> <!--Div que cierra el *ngIf="users.-->
+<router-outlet></router-outlet>
+<ng-template #noUsers>
+    <div class="spinner-border text-success spinner" role="status">
+        <span class="sr-only">Cargando...</span>Loading...
+    </div>
+</ng-template>
