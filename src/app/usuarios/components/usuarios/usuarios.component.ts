@@ -8,6 +8,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 //Importar los validadores personalizados para validar el password
 //y confirmar que los password coinciden
 import { mustMatch } from '../../helpers/must-match-validator';
+import { $ } from 'protractor';
 
 @Component({
   selector: 'app-usuarios',
@@ -20,16 +21,19 @@ export class UsuariosComponent implements OnInit {
 
 
   //Variable para el formulario
-
   public registerForm!: FormGroup;
   public submitted = false;
+
+  //Variable que contendra los datos del usuario a eliminar
+  public user:any;
 
   //Arreglo que contendra todos los usuarios de la bd
   public users:any = [];
 
   constructor(private usuariosService: UsuariosService,
               private router: Router,
-              public modal: NgbModal,
+              public modal: NgbModal, //Modal para insertar usuario
+              public modalDelete: NgbModal, //Modal para eliminar usuario
               private formBuilder: FormBuilder) {
     this.users = new Array()
   }
@@ -74,7 +78,7 @@ export class UsuariosComponent implements OnInit {
                         .subscribe(res =>{
                           console.log(res);
                           this.getUsers();//Obtenemos los usuarios
-                          this.registerForm.reset; //Limpiamos el formulario
+                          this.registerForm.reset(); //Limpiamos el formulario
                           this.modal.dismissAll(); //Cerramos el modal
                         },
                         err => console.log("HTTP Response", err)
@@ -109,7 +113,35 @@ export class UsuariosComponent implements OnInit {
     } else {
       return `with: ${reason}`;
     }
-  }
+  } //Fin de getDismissReaseon
 
+
+  //Metodo para abrir el modal para eliminar usuarios
+  abrirModalEliminar(id:string, modalName:any){
+    this.usuariosService.getUser(id)
+                        .subscribe(res=>{
+                          this.user = res as UsuariosI;
+                        },
+                        err =>console.log("Error al obtener el usuario", err)
+                        );
+    this.modalDelete.open(modalName, {size: 'sm'})
+                    .result.then((res)=>{
+                      this.closeResult = `Closed with: ${res}`;
+                    }, (reason) => {
+                      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+                    });
+  }//Fin de abrirModalEliminar
+
+  //Metodo para eliminar el usuario definitivamente
+  deleteUser(id:string){
+    //console.log(id);
+    this.usuariosService.removeUser(id)
+                        .subscribe(res=>{
+                          this.getUsers();
+                          this.modalDelete.dismissAll();
+                        },
+                        err =>console.log("Error al eliminar usuario", err)
+                        );
+  }//Fin de deleteUser
+  
 }
-

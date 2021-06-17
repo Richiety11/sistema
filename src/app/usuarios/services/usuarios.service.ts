@@ -131,4 +131,17 @@ export class UsuariosService {
       }
     );
   }//Fin de removeUser
+
+  //Update User
+  updateUser(usuario:UsuariosI){
+    return this.httpClient.put(
+      this.AUTH_SERVER+'users/'+usuario._id,
+      {
+        headers: new HttpHeaders({
+          'Authorization': 'token-auth ' + this.getToken()
+        })
+      }
+    );
+  }//Fin de updateUser
+
 }//Class usuarioservices
