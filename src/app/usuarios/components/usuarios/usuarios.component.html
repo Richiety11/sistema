@@ -18,6 +18,11 @@
                       Detalles
               </button>
 
+              <button class="btn btn-outline-warning ml-2"
+                      (click)="updateUser(user,updateModal)">
+              Modificar
+              </button>
+
               <button class="btn btn-outline-danger ml-2"
                       (click)="abrirModalEliminar(user._id,removeModal)">
               Eliminar
@@ -49,6 +54,69 @@
               (click)="deleteUser(user._id)">OK</button>
     </div>
   </ng-template>
+
+  <!--Codigo del modal updateModal-->
+<ng-template #updateModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Actualizar usuario</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="updateForm" (ngSubmit)="updateSubmit()">
+        <input type="hidden" formControlName="_id">
+      <div class="form-group">
+        <label>Nombre</label>
+        <div class="input-group">
+          <input class="form-control" placeholder="Ingrese el nombre"
+                 formControlName="uname"
+                 [ngClass]="{ 'is-invalid': submitted && fields.uname.errors }"
+          >
+            <div *ngIf="submitted && fields.uname.errors" class="invalid-feedback">
+              <div *ngIf="fields.uname.errors.required">Nombre es requerido</div>
+            </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <div class="input-group">
+          <input class="form-control" placeholder="Ingrese el email"
+                 formControlName="uemail" readonly>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Contraseña</label>
+        <div class="input-group">
+          <input type="password" class="form-control" placeholder="Ingrese la contraseña"
+                 formControlName="upassword" onfocus="this.value=''"
+                 [ngClass]="{ 'is-invalid': submitted && fields.upassword.errors }"
+          >
+            <div *ngIf="submitted && fields.upassword.errors" class="invalid-feedback">
+              <div *ngIf="fields.upassword.errors.required">Password es requerido</div>
+              <div *ngIf="fields.upassword.errors.minlength">Password debe contener al menos 6 caracteres</div>
+            </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Tipo de usuario</label>
+        <div class="select-group">
+          <select class="form-control" formControlName="utipo">
+            <option value="1" selected>Regular</option>
+            <option value="0">Administrador</option>
+          </select>
+          <div *ngIf="submitted && fields.utipo.errors" class="invalid-feedback">
+            <div *ngIf="fields.utipo.errors.required">Tipo de usuario es requerido</div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-outline-dark">Actualizar</button>
+      </div>
+    </form>
+  </div>
+  
+</ng-template>
 
 <!--Codigo del modal NgbModal-->
 <ng-template #mimodal let-modal>

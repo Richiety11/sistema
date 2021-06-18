@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { UsuariosI } from '../../models/usuarios';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-
 //Importar los validadores personalizados para validar el password
 //y confirmar que los password coinciden
 import { mustMatch } from '../../helpers/must-match-validator';
@@ -19,9 +18,9 @@ export class UsuariosComponent implements OnInit {
   //Variable para el modal
   closeResult = '';
 
-
   //Variable para el formulario
   public registerForm!: FormGroup;
+  public updateForm!: FormGroup;
   public submitted = false;
 
   //Variable que contendra los datos del usuario a eliminar
@@ -34,6 +33,7 @@ export class UsuariosComponent implements OnInit {
               private router: Router,
               public modal: NgbModal, //Modal para insertar usuario
               public modalDelete: NgbModal, //Modal para eliminar usuario
+              public modalUpdate: NgbModal, //Modal para actualizar el usuario
               private formBuilder: FormBuilder) {
     this.users = new Array()
   }
@@ -51,6 +51,17 @@ export class UsuariosComponent implements OnInit {
       validator: mustMatch('password', 'passwordconfirm')
     }
     );
+
+    //validadores para actulizar el usuario
+    this.updateForm = this.formBuilder.group({
+      _id:[''],
+      uname: ['', Validators.required],
+      uemail: ['', [ Validators.required, Validators.email ] ],
+      upassword: ['', [Validators.required, Validators.minLength(6) ] ],
+      utipo: ['', Validators.required]
+    },
+    );
+
     this.getUsers();
   }//Fin de ngOnInit
 
@@ -144,4 +155,51 @@ export class UsuariosComponent implements OnInit {
                         );
   }//Fin de deleteUser
   
+
+
+
+//Nota:Cada que se modifica un usuario se deberá cambiar la contraseña con una nueva
+//Ya que la encriptacion no peermite sobreescribir la contraseña
+//*** */
+  //Carga el usuario a modificar en el modal con sus datos de la base de datos
+  updateUser(user:UsuariosI, modalName:any){
+    console.log(user);
+    //Validadores para actualizar usuario
+    this.updateForm = this.formBuilder.group({
+      _id:[user._id],
+      uname: [user.name],
+      uemail: [user.email, [ Validators.required, Validators.email ] ],
+      upassword: [user.password, [Validators.required, Validators.minLength(6) ] ],
+      utipo: [user.tipo, Validators.required]
+      },
+    );
+    this.modalUpdate.open(modalName, {size: 'sm'})
+                    .result.then((res)=>{
+                      this.closeResult = `Closed with: ${res}`;
+                    }, (reason) => {
+                      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+                    });
+  }//Fin de updateUser
+
+  updateSubmit(){
+    if(this.updateForm.invalid)
+      return;
+    console.log(this.updateForm.value)
+
+    //Creamos el objeto del usuario para actualizar
+    let userUpdate = {
+      _id: this.updateForm.value._id,
+      name: this.updateForm.value.uname,
+      email: this.updateForm.value.uemail,
+      password: this.updateForm.value.upassword,
+      tipo: this.updateForm.value.utipo
+    }
+
+    this.usuariosService.updateUser(userUpdate)
+                        .subscribe( res =>{
+                          console.log(res);
+                          this.getUsers();
+                          this.modalUpdate.dismissAll();
+                        })
+  }//Fin de updateSubmit
 }
