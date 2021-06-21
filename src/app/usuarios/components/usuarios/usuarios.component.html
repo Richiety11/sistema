@@ -5,28 +5,36 @@
           <th scope="col">Nombre</th>
           <th scope="col">Email</th>
           <th scope="col">
-              <button type="button" class="btn btn-outline-light"
-                      (click)="open(mimodal)">Agregar</button>
+            <a class="btn" (click)="open(mimodal)"
+               placement="top" ngbTooltip="Agregar usuario">
+               <i class="fas fa-user-plus fa-lg"></i>
+            </a>
           </th>
       </thead>
       <tr scope="row" *ngFor="let user of users">
           <td>{{user.name}}</td>
           <td>{{user.email}}</td>
           <td>
-              <button class="btn btn-outline-success"
-                      (click)="showUser(user._id)">
-                      Detalles
-              </button>
+            <a class="btn btn-outline-success mr-2"
+                  (click)="showUser(user._id)"
+                placement="top" ngbTooltip="Mostrar datos del usuario"
+            >
+              <i class="fas fa-binoculars fa-lg"></i>
+            </a>
 
-              <button class="btn btn-outline-warning ml-2"
-                      (click)="updateUser(user,updateModal)">
-              Modificar
-              </button>
+            <a class="btn btn-outline-warning mr-2"
+                  (click)="updateUser(user, updateModal)"
+                placement="top" ngbTooltip="Modificar usuario"
+            >
+              <i class="fas fa-user-edit fa-lg"></i>
+            </a>
 
-              <button class="btn btn-outline-danger ml-2"
-                      (click)="abrirModalEliminar(user._id,removeModal)">
-              Eliminar
-              </button>
+            <a class="btn btn-outline-danger mr-2"
+                  (click)="abrirModalEliminar(user._id, removeModal)"
+                placement="top" ngbTooltip="Eliminar usuario"
+            >
+              <i class="fas fa-user-times fa-lg"></i>
+            </a>
           </td>
       </tr>
   </table>
@@ -111,7 +119,10 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="submit" class="btn btn-outline-dark">Actualizar</button>
+        <button type="button" class="btn btn-outline-danger mr-2"
+                (click)="cancelUpdate()"> Cancelar </button>
+        <button type="submit" [disabled]="!updateForm.valid" 
+                class="btn btn-dark">Actualizar</button>
       </div>
     </form>
   </div>

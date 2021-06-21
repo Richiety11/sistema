@@ -4,10 +4,14 @@ import { Router } from '@angular/router';
 import { UsuariosI } from '../../models/usuarios';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+
 //Importar los validadores personalizados para validar el password
 //y confirmar que los password coinciden
 import { mustMatch } from '../../helpers/must-match-validator';
-import { $ } from 'protractor';
+
+//Libreria para alertas
+import Swal from 'sweetalert2';
+
 
 @Component({
   selector: 'app-usuarios',
@@ -87,7 +91,7 @@ export class UsuariosComponent implements OnInit {
 
     this.usuariosService.addUser(usuario)
                         .subscribe(res =>{
-                          console.log(res);
+                          //console.log(res);
                           this.getUsers();//Obtenemos los usuarios
                           this.registerForm.reset(); //Limpiamos el formulario
                           this.modal.dismissAll(); //Cerramos el modal
@@ -143,11 +147,18 @@ export class UsuariosComponent implements OnInit {
                     });
   }//Fin de abrirModalEliminar
 
+
+  
   //Metodo para eliminar el usuario definitivamente
   deleteUser(id:string){
     //console.log(id);
     this.usuariosService.removeUser(id)
                         .subscribe(res=>{
+                          Swal.fire({
+                            icon: 'error',
+                            text: 'Usuario eliminado correctamente',
+                            confirmButtonColor: '#A1260C'
+                          });
                           this.getUsers();
                           this.modalDelete.dismissAll();
                         },
@@ -155,8 +166,6 @@ export class UsuariosComponent implements OnInit {
                         );
   }//Fin de deleteUser
   
-
-
 
 //Nota:Cada que se modifica un usuario se deberá cambiar la contraseña con una nueva
 //Ya que la encriptacion no peermite sobreescribir la contraseña
@@ -167,13 +176,13 @@ export class UsuariosComponent implements OnInit {
     //Validadores para actualizar usuario
     this.updateForm = this.formBuilder.group({
       _id:[user._id],
-      uname: [user.name],
-      uemail: [user.email, [ Validators.required, Validators.email ] ],
+      uname: [user.name, Validators.required],
+      uemail: [user.email],
       upassword: [user.password, [Validators.required, Validators.minLength(6) ] ],
       utipo: [user.tipo, Validators.required]
       },
     );
-    this.modalUpdate.open(modalName, {size: 'sm'})
+    this.modalUpdate.open(modalName)
                     .result.then((res)=>{
                       this.closeResult = `Closed with: ${res}`;
                     }, (reason) => {
@@ -195,11 +204,24 @@ export class UsuariosComponent implements OnInit {
       tipo: this.updateForm.value.utipo
     }
 
+
+
     this.usuariosService.updateUser(userUpdate)
                         .subscribe( res =>{
-                          console.log(res);
+                          //console.log(res);
+                          Swal.fire({
+                            icon: 'success',
+                            text: 'Usuario actualizado correctamente',
+                            confirmButtonColor: '#30A10C'
+                          });
                           this.getUsers();
                           this.modalUpdate.dismissAll();
-                        })
+                        },
+                        err => console.log(err));
   }//Fin de updateSubmit
+
+  cancelUpdate(){
+    this.modalUpdate.dismissAll();
+  }//Fin de cancel update
+
 }
