@@ -12,7 +12,7 @@ import { LoginComponent } from '../components/login/login.component';
   providedIn: 'root'
 })
 export class UsuariosService {
-  AUTH_SERVER: string = 'http://localhost:3100/api/';
+  AUTH_SERVER: string = 'http://18.218.93.50:3100/api/';
   authSubject = new BehaviorSubject(false);
   private token: any ='';
 
