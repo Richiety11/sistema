@@ -6,8 +6,8 @@ import { EmpleadosComponent } from './components/empleados/empleados.component';
 //Ruta localhost:4200/empleados
 const routes: Routes = [
   {
-    path: 'empleados', 
-    component: EmpleadosComponent,
+    path: 'empleados',
+    component: EmpleadosComponent, 
     canActivate: [CanActivateGuard]
   }
 ];

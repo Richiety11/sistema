@@ -24,6 +24,8 @@
     "auth-header": "^1.0.0",
     "bootstrap": "^5.0.1",
     "jquery": "^3.6.0",
+    "jspdf": "^2.3.1",
+    "jspdf-autotable": "^3.5.15",
     "jwt-decode": "^3.1.2",
     "popper": "^1.0.1",
     "rxjs": "~6.6.0",

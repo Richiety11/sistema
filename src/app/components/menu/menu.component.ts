@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UsuariosService } from 'src/app/usuarios/services/usuarios.service';
+import { EmpleadosService } from 'src/app/empleados/services/empleados.service';
 
 @Component({
   selector: 'app-menu',
@@ -11,7 +12,7 @@ export class MenuComponent implements OnInit {
   usuarioLogueado = false;
   userName:String='';
 
-  constructor(public usuariosServices: UsuariosService) { }
+  constructor(public usuariosServices: UsuariosService, public empleadoServices: EmpleadosService) { }
 
   ngOnInit(): void {
     this.usuarioLogueado = this.usuariosServices.isLogged('');

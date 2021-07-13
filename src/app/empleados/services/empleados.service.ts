@@ -1,18 +1,16 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from "@angular/common/http"; //peticiones al backend
-import { Observable, BehaviorSubject, Subject } from 'rxjs'; //Manejo de tokens en el servidor
-import { tap } from 'rxjs/operators';
+import { HttpClient, HttpHeaders} from '@angular/common/http';
+import { Empleados } from '../models/empleados';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import jwt_decode from 'jwt-decode';
-
-import { UsuariosI } from '../models/usuarios';
-import { TokenI } from "../models/token";
-import { LoginComponent } from '../components/login/login.component';
-
+import { UsuariosI } from 'src/app/usuarios/models/usuarios';
+import { TokenI } from 'src/app/usuarios/models/token';
+import { tap } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root'
 })
-export class UsuariosService {
-  AUTH_SERVER: string = 'http://localhost:3100/api/';
+export class EmpleadosService {
+  AUTH_SERVER = 'http://localhost:3100/api/';
   authSubject = new BehaviorSubject(false);
   private token: any ='';
 
@@ -28,9 +26,16 @@ export class UsuariosService {
   public changeUserNameSubject = new Subject<String>();
   public changeUserName$ = this.changeUserNameSubject.asObservable();
 
-  constructor(private httpClient: HttpClient) { }
-  //Funcion que almacena en el localstorage del navegador
-  //el token y la fecha de expiracion
+  //Variable para intercambiar los datos con el formulario
+  empleado: Empleados ;
+
+  //Variable para almacenar todos los empleados
+  empleados: Empleados [];
+
+  constructor(private httpClient: HttpClient){
+    this.empleado = new Empleados();
+    this.empleados = new Array();
+  }
 
   login(user: UsuariosI): Observable<TokenI>{
     return this.httpClient.post<TokenI>(this.AUTH_SERVER+'login', user)
@@ -51,10 +56,6 @@ export class UsuariosService {
         );
   }//Function Login
 
-  //Funcion que regresa verdadero si se encuentra un token en memoria
-  //Y guarda la url enviada como parametro a la variable urlUsuarioIntentaAcceder
-  //En caso de encontrar el token 
-  //En caso contrario solo regresa false (el usuario no se ha logeado)
   isLogged(url:string):boolean{
     const isLogged = localStorage.getItem("ACCESS_TOKEN");
     if (!isLogged){ //No hay token en memoria
@@ -85,62 +86,31 @@ export class UsuariosService {
     return this.token;
   }//Fin de getToken
 
-  getUsers(){
+  //Obtener todos los empleados
+  getEmpleados(){
     return this.httpClient.get(
-      this.AUTH_SERVER+'users',
+      this.AUTH_SERVER+'empleados',
       {
         headers: new HttpHeaders({
-            'Authorization': 'token-auth '+ this.getToken()
+          'Authorization': 'token-auth '+ this.getToken()
         })
       }
-    )
-  }//Fin de getUsers
+      );
+  }
 
-  //Obtener los datos de un usuario
-  getUser(id:string){
-    return this.httpClient.get(
-      this.AUTH_SERVER+'users/'+id,
-      {
-        headers: new HttpHeaders({
-            'Authorization': 'token-auth '+ this.getToken()
-        })
-      }
-    )
-  }//fin de getUser
+  //Agreagar un empleado a la base de datos
+  addEmpleado(empleado: Empleados){
+    return this.httpClient.post(this.AUTH_SERVER,empleado);
+  }
 
-  //Agregar un usuario
-  addUser(usuario:UsuariosI){
-    return this.httpClient.post(
-        this.AUTH_SERVER+'users/',usuario,
-        {
-          headers: new HttpHeaders({
-            'Authorization': 'token-auth ' + this.getToken()
-          })
-        }
-    );
-  }//Fin de addUser
+  //Modificar un empleado
+  updateEmpleado(empleado: Empleados){
+    return this.httpClient.put(this.AUTH_SERVER + '/' + empleado._id,empleado);
+  }
 
-  //Remover usuarios
-  removeUser(id:string){
-    return this.httpClient.delete(
-      this.AUTH_SERVER+'users/'+ id,
-      {
-        headers: new HttpHeaders({
-          'Authorization': 'token-auth ' + this.getToken()
-        })
-      }
-    );
-  }//Fin de removeUser
+  //Eliminar un empleado
+  deleteEmpleado(_id:String){
+    return this.httpClient.delete(this.AUTH_SERVER + '/' + _id);
+  }
+}
 
-  //Update User
-  updateUser(usuario:UsuariosI){
-    return this.httpClient.put(
-      this.AUTH_SERVER+'users/'+usuario._id,
-      {
-        headers: new HttpHeaders({
-          'Authorization': 'token-auth ' + this.getToken()
-        })
-      }
-    );
-  }//Fin de updateUser
-}//Class usuarioservices
